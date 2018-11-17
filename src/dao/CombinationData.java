@@ -1,8 +1,10 @@
-package product;
+package dao;
 
 import java.util.ArrayList;
-
-public class Data {
+/**
+ * 产生组合数据
+ */
+public class CombinationData {
 	private static ArrayList<Integer> tmpArr = new ArrayList<>();
 	private static ArrayList<String> list = new ArrayList<>();
 

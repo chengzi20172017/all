@@ -1,111 +1,110 @@
 package controler;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import product.Data;
+import pojo.Dog;
+import service.CounterService;
 
 public class Do {
-	public static void main(String[] args) {
-		//252种情况
-		ArrayList<String> list = new  ArrayList<String>();
-		//原始数据
-		ArrayList<String> inData = null;
-		//过滤后原始数据
-		ArrayList<ArrayList<String>> inlis =new ArrayList<ArrayList<String>>();
-		//计算后的结果
-		HashMap<String, Integer> result=new HashMap<String, Integer>();
-		//获取252种情况
-		int[] com = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		int k = 5;
-		Data data=new Data();
-		 list = data.product(k, com);
-		//获取原始数据
-	    inData = inData();
-		//原始数据属于252种情况的那种
-	    for (String in : inData) {
-	    	ArrayList<String> tmplis = new  ArrayList<String>();
-	    	for (String str : list) {
-				if(str.contains(in)){
-					tmplis.add(str);
-				}
-			}
-	    	inlis.add(tmplis);
-	    	
-		}
-	    
-	    
-//	    //测试
-//	    for(int i=0;i<4;i++){
-//	    	   ArrayList<String> tmplis1 = new  ArrayList<String>();
-//	   	    ArrayList<String> tmplis2 = new  ArrayList<String>();
-//	   	    ArrayList<String> tmplis3 = new  ArrayList<String>();
-//	   	    tmplis1.add("13579");
-//	   	    tmplis1.add("13578");
-//	   	    tmplis1.add("13589");
-//	   	    inlis.add(tmplis1);
+
+	public static void main(String[] args) throws Exception {
+		CounterService counterService = new CounterService();
+
+		 //预测
+		 File infile = new File("D:\\chengzi\\账号\\indata.txt");
+		 File outfile = new File("D:\\chengzi\\账号\\outdata.txt");
+		 ArrayList<Dog> result = Prediction(counterService,infile,outfile);
+		
+		 //结果是否正确判断
+		 String str="0";
+		 ArrayList<Dog> res = counterService.preResult(result,str);
+		 System.out.println(res.get(0).getPreresult());
+
+//		// 验证是否合理
+//		File prindata = new File("D:\\chengzi\\账号\\prindata.txt");
+//		File proutdata = new File("D:\\chengzi\\账号\\proutdata.txt");
+//		File infile = new File("D:\\chengzi\\账号\\indata.txt");
+//		File outfile = new File("D:\\chengzi\\账号\\outdata.txt");
 //
-//	    }
-	 
-	    
-		//计算
-		result = counter(inlis);
-		System.out.println("1111111111111");
-		System.out.println(result.toString());
+//		// 大数据
+//		ArrayList<String> inlist = new ArrayList<String>();
+//		BufferedReader br = new BufferedReader(new FileReader(prindata));
+//		String s = null;
+//		while ((s = br.readLine()) != null) {
+//			
+//			inlist.add(s);
+//		}
+//		br.close();
+//
+//		ArrayList<String> inlistout = new ArrayList<String>();
+//		ArrayList<Dog> resultout = new ArrayList<>();
+//		BufferedWriter prbw = new BufferedWriter(new FileWriter(proutdata));
+//		for (int i = 0; i < inlist.size() - 1; i++) {
+//			BufferedWriter bw = new BufferedWriter(new FileWriter(infile));
+//
+//			inlistout.add(inlist.get(i));
+//			// 造数据
+//			for (String str : inlistout) {
+//				bw.write(str);
+//				bw.newLine();
+//			}
+//			bw.flush();
+//			bw.close();
+//			if (i > 1) {
+//				// 预测
+//				ArrayList<Dog> result = Prediction(counterService, infile, outfile);
+//				String string = inlist.get(i + 1);
+//				String[] split = string.split("\\D");
+//				String string2 = split[1];
+//				String str = inlist.get(i + 1).split("\\D")[2].substring(4);
+//				// 判断是否对错
+//				ArrayList<Dog> res = counterService.preResult(result, str);
+//				Dog dog = res.get(0);
+//				resultout.add(dog);
+//			}
+//		}
+//		for (Dog dog : resultout) {
+//			String str = "错";
+//			if (dog.getPreresult()) {
+//				str = "对";
+//			}
+//			System.out.println(dog.getDate() + ":" + "正=" + dog.getZheng() + ";" + "连续=" + dog.getScore() + ";" + "反="
+//					+ dog.getFan() + ";" + "预测结果=" + str);
+////			prbw.write(dog.getDate() + ":" + "正=" + dog.getZheng() + ";" + "连续=" + dog.getScore() + ";" + "反="
+////					+ dog.getFan() + ";" + "预测结果=" + str);
+//			prbw.newLine();
+//		}
+//		prbw.flush();
+//		prbw.close();
+//		System.out.println("完成");
 	}
 
-	private static HashMap<String, Integer> counter(ArrayList<ArrayList<String>> inlis) {
- 		HashMap<String, Integer> result=new HashMap<String, Integer>();
- 		
- 		//首次出现设置为1
- 		ArrayList<String> lisfirst =inlis.get(0);
-			for (String string : lisfirst) {
-				result.put(string, 1);
-		}
-			
- 		//把每次结果放再inlist
- 		for (int j=1;j< inlis.size();j++) {
- 				//前一次
- 				ArrayList<String> tmplisfirst =inlis.get(j-1);
- 				//后一次
- 				ArrayList<String> tmplistwo =inlis.get(j);
- 				for (String string : tmplistwo) {
- 					if(result.containsKey(string) && tmplisfirst.contains(string)){
- 	 					int a =result.get(string);
- 	 					a++;
- 	 					result.put(string, a);
- 	 				}else{
- 	 					result.put(string, 1);
- 	 				}
-				}		
-		}
- 		
- 		
+	private static ArrayList<Dog> Prediction(CounterService counterService, File infile, File outfile)
+			throws Exception, IOException {
+		// 原始数据属于那些组合
+		ArrayList<ArrayList<String>> inlis = new ArrayList<ArrayList<String>>();
+		// 原始数据
+		ArrayList<String> inData = null;
+
+		// 对结构排序并存到对象中
+		ArrayList<Dog> result = new ArrayList<Dog>();
+
+		// 获取原始数据
+		inData = counterService.inData(infile);
+
+		// 查找原始数据属于那些组合
+		inlis = counterService.Combinadata(inData);
+		// 计算
+		result = counterService.counter(inlis, inData.get(inData.size() - 1));
+
+		// 结果输出
+		counterService.Output(result, outfile);
 		return result;
 	}
-	
-	
-	private static ArrayList<String> inData() {
-		 ArrayList<String> inlist =new  ArrayList<String>();
-		 inlist.add("1");
-		 inlist.add("6");
-		 inlist.add("4");
-		 inlist.add("0");
-		 inlist.add("8");
-		 inlist.add("6");
-		 inlist.add("4");
-		 inlist.add("7");
-		 inlist.add("6");
-		 inlist.add("9");
-		 inlist.add("6");
-		 inlist.add("8");
-		 inlist.add("5");
-		 inlist.add("6");
-		 inlist.add("5");
-		 inlist.add("8");
-		 inlist.add("6");
-		return inlist;
-		
-		}
 }
